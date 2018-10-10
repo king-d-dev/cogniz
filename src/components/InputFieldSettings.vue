@@ -145,7 +145,7 @@ export default {
     }
   },
   computed: {
-    shouldShow(field) {
+    shouldShow() {
       return !canNotEditSubFields.includes(this.field.type);
     }
   }

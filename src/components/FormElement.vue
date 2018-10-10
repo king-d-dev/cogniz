@@ -50,7 +50,7 @@ export default {
   padding 7px 7px 0
   color #fff
   box-shadow 0 0 15px rgba(0,0,0,.5)
-  transition-property background, border-radius, color, box-shadow, padding
+  transition background, border-radius, color, box-shadow, padding
   transition-duration .4s, .10s, .4s, .5s, .5s
 
 .dummy-name
