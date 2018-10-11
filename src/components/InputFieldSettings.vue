@@ -98,9 +98,11 @@ const canNotEditSubFields = ['fullName', 'telephoneNumber'];
 
 export default {
   data() { 
-    const subFields =  this.field.subFields.map(f => {
-      return { ...f };
-    });
+    let subFields = [];
+    
+    if(this.field.subFields) {
+      subFields = this.makeCopy(this.field.subFields);
+    }
 
     return {
       active:false,
@@ -117,10 +119,17 @@ export default {
     toggleActive() {
       this.active = !this.active;
     },
-    duplicate() {
-      const subFields =  this.subFields.map(f => {
+    makeCopy(source) {
+      return source.map(f => {
         return {...f};
       });
+    },
+    duplicate() {
+      let subFields = [];
+
+      if(this.subFields) {
+        subFields =  this.makeCopy(this.subFields)
+      }
       
       this.createInputField({
         ...this.field,
@@ -143,6 +152,12 @@ export default {
       this.subFields = this.subFields.filter(f => f !== subField);
     },
     save() {
+      let subFieldsCopy = [];
+    
+      if(this.subFields) {
+        subFieldsCopy = this.makeCopy(this.subFields);
+      }
+      
       this.editField({
         field: this.field,
         update: {
@@ -151,7 +166,7 @@ export default {
           required: this.required,
           description: this.description,
           questionText: this.questionText,
-          subFields: this.subFields
+          subFields: subFieldsCopy
         }
       });
       this.toggleActive();

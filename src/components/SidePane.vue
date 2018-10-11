@@ -1,9 +1,12 @@
 <template>
   <div id="side-pane">
     <div id="user-profile">
-      <vs-avatar size="80px" :src="profilePic"/>
+      <!-- <vs-avatar size="80px" :src="profilePic"/> -->
+      <div id="profile-img-wrapper">
+        <!-- <img id="profile-img" :src="profilePic" alt="profile-pic"> -->
+      </div>
       <div class="side-pane-wrapper">
-        <p id="user-info">Ben Parker</p>
+        <p id="user-info">Joyce Wilson</p>
         <span class="settings-icon">
           <i class="material-icons">settings</i>
         </span>
@@ -18,12 +21,10 @@
 <script>
 import { mapState } from "vuex";
 import FormElement from "./FormElement";
-import profilePic from "../assets/img/pexels-photo-428364.jpeg";
 
 export default {
   data:()=>({
-    active:false,
-    profilePic
+    active:false
   }),
   components: {FormElement},
   computed: {
@@ -45,6 +46,16 @@ export default {
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
   }
+  
+  #profile-img-wrapper {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-image: url("../assets/img/junior-moran-1054289-unsplash.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
 
   #user-profile {
     display: flex;
@@ -58,6 +69,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
+    margin-top: 10px;
   }
 
   #user-info {
