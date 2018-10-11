@@ -12,11 +12,22 @@
           <h4 v-else>{{ form.title }}</h4>
           </div>
           <vs-button v-if="!editTitle" vs-size="small" @click="toggleEditTitle" vs-color="primary" vs-type="border" vs-icon="edit">edit</vs-button>
-          <vs-button class="save" v-else vs-size="small" @click="save" vs-color="success" vs-type="border" vs-icon="save">save</vs-button>
+          <vs-button class="save" v-else vs-size="small" @click="save" color="success" vs-type="border" vs-icon="save">save</vs-button>
       </vs-col>
     </vs-row>
     <div class="content">
-      <InputField @toggleActive="setActive" :active="(activeField === field) ? true : false" class="input-field" v-for="(field, index) in form.fields" :key="index" :field="field" :type="field.type"></InputField>
+      <InputField 
+      @toggleActive="setActive" 
+      @moveField="moveField"
+      :active="(activeField === field) ? true : false" 
+      class="input-field" 
+      v-for="(field, index) in form.fields" 
+      :key="index" 
+      :index="index"
+      :field="field" 
+      :type="field.type"
+    >
+    </InputField>
   </div>
   </div>
 </template>
@@ -38,7 +49,7 @@ export default {
   mixins: [DropTarget],
   computed: mapState(['form', 'preDefinedFields']),
   methods: {
-    ...mapActions(['createInputField', 'editFormTitle']),
+    ...mapActions(['createInputField', 'editFormTitle', 'onMoveField']),
     toggleEditTitle() {
       this.editTitle = !this.editTitle;
     },
@@ -48,6 +59,9 @@ export default {
     },
     setActive(field) {
       this.activeField = field;
+    },
+    moveField (dragIndex, hoverIndex) {
+      this.onMoveField({ dragIndex, hoverIndex });
     }
   },
   dropTarget: {

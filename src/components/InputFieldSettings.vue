@@ -41,7 +41,7 @@
           <span class="settings-description">Prevent submission if this question is empty</span>
         </vs-row>
 
-        <div v-if="subFields.length">
+        <div v-if="shouldShowSubFields">
           <vs-divider/>
 
           <label class="sub-labels-heading">
@@ -70,10 +70,12 @@
 
         <vs-row>
           <label class="settings-label">Duplicate</label>
-          <vs-col class="duplicate" type="flex" vs-w="12">
-            <i class="material-icons">flip_to_front</i>
-            <span> &nbsp; &nbsp; DUPLICATE</span>
-          </vs-col>
+          <div @click="duplicate">
+            <vs-col class="duplicate" type="flex" vs-w="12">
+              <i class="material-icons">flip_to_front</i>
+              <span> &nbsp; &nbsp; DUPLICATE</span>
+            </vs-col>
+          </div>
           <span class="settings-description">Make a copy of this field with all saved settings</span>
         </vs-row>
       </div>
@@ -91,32 +93,43 @@
 <script>
 import { mapActions } from "vuex";
 
-const containsSubFields = ['fullName', 'singleChoice', 'multipleChoice'];
-const canNotEditSubFields = ['fullName'];
+const containsSubFields = ['fullName', 'singleChoice', 'multipleChoice', 'telephoneNumber'];
+const canNotEditSubFields = ['fullName', 'telephoneNumber'];
 
 export default {
   data() { 
+    const subFields =  this.field.subFields.map(f => {
+      return { ...f };
+    });
+
     return {
       active:false,
       label: this.field.label,
       required: this.field.required,
       description: this.field.description,
       questionText: this.field.questionText,
-      subFields: (containsSubFields.includes(this.field.type)) ? [
-        {
-          ...this.field.subFields[0]
-        },
-        {
-          ...this.field.subFields[1]
-        }
-      ] : []
+      subFields
     }
   },
   props: ['field'],
   methods: {
-    ...mapActions(['editFormTitle', 'editField']),
+    ...mapActions(['editFormTitle', 'editField', 'createInputField']),
     toggleActive() {
       this.active = !this.active;
+    },
+    duplicate() {
+      const subFields =  this.subFields.map(f => {
+        return {...f};
+      });
+      
+      this.createInputField({
+        ...this.field,
+        label: this.label,
+        required: this.required,
+        description: this.description,
+        questionText: this.questionText,
+        subFields
+      });
     },
     addSubField() {
       const newOption = {
@@ -147,6 +160,9 @@ export default {
   computed: {
     shouldShow() {
       return !canNotEditSubFields.includes(this.field.type);
+    },
+    shouldShowSubFields() {
+      return containsSubFields.includes(this.field.type);
     }
   }
 }
@@ -175,6 +191,9 @@ export default {
       border 0px solid rgba(0,0,0,0) !important
       border-left 1px solid rgba(0,0,0,.07) !important
       border-radius 0px !important
+
+.build
+  color blue
 
 #settings-content 
   padding-left 10px

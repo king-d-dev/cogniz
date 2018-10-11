@@ -5,7 +5,7 @@
       <vs-col class="cg-content" vs-type="flex" vs-justify="start" vs-align="flex-start" vs-w="2">
         <SidePane></SidePane>
       </vs-col>
-      <vs-col class="cg-content" vs-type="flex" vs-justify="center" vs-align="flex-start" vs-w="10">
+      <vs-col id="cg-form" class="cg-content" vs-type="flex" vs-justify="center" vs-align="flex-start" vs-w="10">
         <Form></Form>
       </vs-col>
     </vs-row> 
@@ -50,5 +50,9 @@ export default {
 
   .cg-content {
     margin-top: 56px;
+  }
+
+  #cg-form {
+    margin-bottom: 150px;
   }
 </style>

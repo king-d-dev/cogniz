@@ -90,7 +90,18 @@ const preDefinedFields = [
     type: "telephoneNumber",
     required: false,
     description: "",
-    name: ""
+    name: "",
+    questionText: "Telephone Number",
+    subFields: [
+      {
+        label: "Area code",
+        description: "Area code"
+      },
+      {
+        label: "Phone Number",
+        description: "Phone Number"
+      }
+    ]
   },
   {
     dummy_name: "Long Text Entry",
@@ -142,6 +153,9 @@ export default new Vuex.Store({
     },
     removeField({ commit }, field) {
       commit("removeField", field);
+    },
+    onMoveField({ commit }, { dragIndex, hoverIndex }) {
+      commit("moveField", { dragIndex, hoverIndex });
     }
   },
   mutations: {
@@ -151,6 +165,12 @@ export default new Vuex.Store({
     editField(state, { field, update }) {
       let found = state.form.fields.find(f => f === field);
       for (let prop in found) {
+        // this is for nested objects within an array
+        // if (typeof found[prop] === "object") {
+        //   for (let f in found[prop]) {
+        //     found[prop] = { ...f };
+        //   }
+        // }
         found[prop] = update[prop];
       }
     },
@@ -159,6 +179,14 @@ export default new Vuex.Store({
     },
     removeField(state, field) {
       state.form.fields = state.form.fields.filter(f => f !== field);
+    },
+    moveField(state, { dragIndex, hoverIndex }) {
+      const dragItem = state.form.fields[dragIndex];
+      state.form.fields[dragIndex] = state.form.fields.splice(
+        hoverIndex,
+        1,
+        dragItem
+      )[0];
     }
   }
 });

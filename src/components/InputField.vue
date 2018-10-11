@@ -1,6 +1,6 @@
 <template>
-  <div @click="toggleActive" :class="active ? 'active' : 'none'">
-    <vs-row class="input-field" v-dragSource vs-type="flex" vs-justify="space-between" vs-align="flex-start" vs-w="12">
+  <div v-dragSource v-dropTarget @click="toggleActive" :class="active ? 'active' : 'none'">
+    <vs-row class="input-field" vs-type="flex" vs-justify="space-between" vs-align="flex-start" vs-w="12">
       <vs-divider>
         {{ field.dummy_name }}
       </vs-divider>
@@ -12,7 +12,7 @@
       <MultipleChoiceField v-if="type === 'multipleChoice'" :field="field"/> 
       <EmailField v-if="type === 'email'" :field="field"/>
       <PasswordField v-if="type === 'password'" :field="field"/>
-      <TelephoneField v-if="type === 'telephoneNumber'" v-model="value"/>
+      <TelephoneField v-if="type === 'telephoneNumber'" :field="field"/>
       <FileUploadField v-if="type === 'file'" :field="field"></FileUploadField>
       <LongTextEntryField v-if="type === 'longTextEntry'" :field="field"></LongTextEntryField>
       <NumberInputField v-if="type === 'number'" :field="field"></NumberInputField>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { DragSource } from "vue-react-dnd";
+import { DragSource, DropTarget } from "vue-react-dnd";
 import { mapActions } from "vuex";
 import FullNameField from './FullNameField';
 import SingleChoiceField from './SingleChoiceField';
@@ -40,21 +40,72 @@ import LongTextEntryField from './LongTextEntryField';
 
 export default {
   name: "InputField",
-  props:["field", "type", "active"],
-  mixins: [DragSource],
+  props:["field", "type", "active", "index"],
+  mixins: [DragSource, DropTarget],
+  data(){
+    return {
+      description: this.field.description
+    }
+  },
   dragSource: {
     type() {
       return "InputField";
     },
     specs: {
       beginDrag() {
-        return { ...this.field };
+        return { ...this.field, index: this.index };
       }
     }
   },
-  data(){
-    return {
-      description: this.field.description
+  dropTarget: {
+    type() {
+      return "InputField";
+    },
+    specs: {
+      hover(monitor) {
+        const dragIndex = monitor.getItem().index;
+        const hoverIndex = this.index;
+
+        // Don't replace items with themselves
+        if (dragIndex === hoverIndex) {
+          return
+        }
+
+        // Determine rectangle on screen
+        const hoverBoundingRect = this.$el.getBoundingClientRect();
+
+        // Get vertical middle
+        const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+
+        // Determine mouse position
+        const clientOffset = monitor.getClientOffset();
+
+        // Get pixels to the top
+        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+
+        // Only perform the move when the mouse has crossed half of the items height
+        // When dragging downwards, only move when the cursor is below 50%
+        // When dragging upwards, only move when the cursor is above 50%
+
+        // Dragging downwards
+        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+          return
+        }
+
+        // Dragging upwards
+        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+          return
+        }
+
+        // Time to actually perform the action
+        this.$emit('moveField', dragIndex, hoverIndex);
+
+        // Note: we're mutating the monitor item here!
+        // Generally it's better to avoid mutations,
+        // but it's good here for the sake of performance
+        // to avoid expensive index searches.
+        monitor.getItem().index = hoverIndex;
+      }
     }
   },
   components:{
@@ -158,7 +209,11 @@ export default {
 .trash
   color red
   margin-top 15px
-
-.build
-  color blue
+  &:hover
+    background-color red
+    border-radius 50%
+    padding 1px
+    color #fff
+    transition padding, background-color,color
+    transition-duration .8s, .5s, .5s
 </style>

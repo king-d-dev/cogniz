@@ -1,5 +1,5 @@
 <template>
-  <vs-textarea :label="field.questionText" />
+  <vs-textarea disabled :label="field.questionText" />
 </template>
 
 <script>
