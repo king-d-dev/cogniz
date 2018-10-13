@@ -45,6 +45,7 @@ export default {
     background-color: #f5f7fb;
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
+    z-index: 100;
   }
   
   #profile-img-wrapper {

@@ -1,14 +1,7 @@
 <template>
   <div>
     <NavBar></NavBar>
-    <vs-row>
-      <vs-col class="cg-content" vs-type="flex" vs-justify="start" vs-align="flex-start" vs-w="2">
-        <SidePane></SidePane>
-      </vs-col>
-      <vs-col id="cg-form" class="cg-content" vs-type="flex" vs-justify="center" vs-align="flex-start" vs-w="10">
-        <Form></Form>
-      </vs-col>
-    </vs-row> 
+    <router-view></router-view>
   </div>
 </template>
 
@@ -16,17 +9,13 @@
 import { DragDropContext } from 'vue-react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import SidePane from "./components/SidePane.vue";
 import NavBar from "./components/NavBar.vue";
-import Form from "./components/Form.vue";
 
 export default {
   name: "App",
   mixins: [DragDropContext(HTML5Backend)],
   components: {
-    SidePane,
-    NavBar,
-    Form
+    NavBar
   }
 }
 </script>

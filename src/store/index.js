@@ -14,13 +14,11 @@ const preDefinedFields = [
     subFields: [
       {
         label: "Last Name",
-        description: "Last Name",
-        name: ""
+        description: "Last Name"
       },
       {
         label: "Other Names",
-        description: "Other Names",
-        name: ""
+        description: "Other Names"
       }
     ]
   },
@@ -52,7 +50,6 @@ const preDefinedFields = [
     required: false,
     description: "",
     questionText: "Choose some",
-    name: "",
     subFields: [
       {
         label: "Option 1",
@@ -72,15 +69,13 @@ const preDefinedFields = [
     type: "password",
     required: false,
     questionText: "Password",
-    description: "",
-    name: ""
+    description: ""
   },
   {
     dummy_name: "Email",
     icon: "email",
     type: "email",
     required: false,
-    name: "",
     description: "",
     questionText: "Email"
   },
@@ -90,7 +85,6 @@ const preDefinedFields = [
     type: "telephoneNumber",
     required: false,
     description: "",
-    name: "",
     questionText: "Telephone Number",
     subFields: [
       {
@@ -109,15 +103,13 @@ const preDefinedFields = [
     type: "longTextEntry",
     questionText: "some text",
     description: "",
-    required: false,
-    name: ""
+    required: false
   },
   {
     dummy_name: "File upload",
     icon: "cloud_upload",
     type: "file",
     required: false,
-    name: "",
     questionText: "Upload something",
     description: ""
   },
@@ -126,7 +118,6 @@ const preDefinedFields = [
     icon: "email",
     type: "number",
     required: false,
-    name: "",
     questionText: "Enter some digits",
     description: ""
   }
@@ -137,7 +128,32 @@ export default new Vuex.Store({
   state: {
     form: {
       title: "Form Title",
-      fields: []
+      fields: [
+        {
+          dummy_name: "Password",
+          icon: "https",
+          type: "password",
+          required: false,
+          questionText: "Password",
+          description: ""
+        },
+        {
+          dummy_name: "Number Input",
+          icon: "email",
+          type: "number",
+          required: false,
+          questionText: "Enter some digits",
+          description: ""
+        },
+        {
+          dummy_name: "Long Text Entry",
+          icon: "email",
+          type: "longTextEntry",
+          questionText: "some text",
+          description: "",
+          required: false
+        }
+      ]
     },
     preDefinedFields
   },
@@ -156,6 +172,9 @@ export default new Vuex.Store({
     },
     onMoveField({ commit }, { dragIndex, hoverIndex }) {
       commit("moveField", { dragIndex, hoverIndex });
+    },
+    autoGenerateFieldsName({ commit }) {
+      commit("autoGenerateFieldsName");
     }
   },
   mutations: {
@@ -187,6 +206,59 @@ export default new Vuex.Store({
         1,
         dragItem
       )[0];
+    },
+    autoGenerateFieldsName(state) {
+      state.form.fields = state.form.fields.map((field, counter) => {
+        if (field.subFields && field.subFields.length > 0) {
+          let sub = field.subFields.map(subfield => {
+            if (field.type === "singleChoice") {
+              let name = `q${counter}_${field.questionText
+                .trim()
+                .replace(" ", "_")}`;
+              return {
+                ...subfield,
+                value: subfield.label,
+                name
+              };
+            }
+
+            if (field.type === "multipleChoice") {
+              let value = subfield.label;
+
+              let name = `q${counter}_${field.questionText
+                .trim()
+                .replace(" ", "_")}[${subfield.label
+                .trim()
+                .replace(" ", "_")}]`;
+              return {
+                ...subfield,
+                value,
+                name
+              };
+            }
+
+            let name = `q${counter}_${field.questionText
+              .trim()
+              .replace(" ", "_")}[${subfield.label.trim().replace(" ", "_")}]`;
+            return {
+              ...subfield,
+              name
+            };
+          });
+          return {
+            ...field,
+            subFields: sub
+          };
+        } else {
+          let name = `q${counter}_${field.questionText
+            .trim()
+            .replace(" ", "_")}`;
+          return {
+            ...field,
+            name
+          };
+        }
+      });
     }
   }
 });

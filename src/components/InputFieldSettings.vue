@@ -113,7 +113,7 @@ export default {
       subFields
     }
   },
-  props: ['field'],
+  props: ['field', 'index'],
   methods: {
     ...mapActions(['editFormTitle', 'editField', 'createInputField']),
     toggleActive() {
@@ -130,6 +130,7 @@ export default {
       if(this.subFields) {
         subFields =  this.makeCopy(this.subFields)
       }
+
       
       this.createInputField({
         ...this.field,

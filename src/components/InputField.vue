@@ -4,21 +4,21 @@
       <vs-divider>
         {{ field.dummy_name }}
       </vs-divider>
-      <div class="description">
+      <!-- <div class="description">
         <input type="text" placeholder="Type Description here" :value="field.description">
-      </div>
-      <FullNameField v-if="type === 'fullName'" :field="field"/>
-      <SingleChoiceField v-if="type === 'singleChoice'" :field="field"/>
-      <MultipleChoiceField v-if="type === 'multipleChoice'" :field="field"/> 
-      <EmailField v-if="type === 'email'" :field="field"/>
-      <PasswordField v-if="type === 'password'" :field="field"/>
-      <TelephoneField v-if="type === 'telephoneNumber'" :field="field"/>
-      <FileUploadField v-if="type === 'file'" :field="field"></FileUploadField>
-      <LongTextEntryField v-if="type === 'longTextEntry'" :field="field"></LongTextEntryField>
-      <NumberInputField v-if="type === 'number'" :field="field"></NumberInputField>
+      </div> -->
+      <FullNameField mode="build" v-if="type === 'fullName'" :field="field"/>
+      <SingleChoiceField mode="build" v-if="type === 'singleChoice'" :field="field"/>
+      <MultipleChoiceField mode="build" v-if="type === 'multipleChoice'" :field="field"/> 
+      <EmailField mode="build" v-if="type === 'email'" :field="field"/>
+      <PasswordField mode="build" v-if="type === 'password'" :field="field"/>
+      <TelephoneField mode="build" v-if="type === 'telephoneNumber'" :field="field"/>
+      <FileUploadField mode="build" v-if="type === 'file'" :field="field"></FileUploadField>
+      <LongTextEntryField mode="build" v-if="type === 'longTextEntry'" :field="field"></LongTextEntryField>
+      <NumberInputField mode="build" v-if="type === 'number'" :field="field"></NumberInputField>
     </vs-row>
     <div v-if="active" class="settings">
-      <InputFieldSettings :field="field"></InputFieldSettings>
+      <InputFieldSettings :field="field" :index="index"></InputFieldSettings>
       <i class="material-icons trash" @click="removeInputField">delete</i>
     </div>
   </div>
