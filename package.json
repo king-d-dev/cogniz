@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "material-icons": "^0.2.3",
     "react-dnd-html5-backend": "^5.0.1",
     "stylus": "^0.54.5",
